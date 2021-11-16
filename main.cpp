@@ -1,7 +1,11 @@
 #include <iostream>
+#include "CommandExecutor.hpp"
 
 using namespace std;
 
+
+
 int main() {
-    cout << "fuck" << endl;
+    auto executor = new CommandExecutor();
+    executor->execute("ls -lah");
 }
