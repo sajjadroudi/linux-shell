@@ -1,7 +1,3 @@
-//
-// Created by sajjad on 11/15/21.
-//
-
 #pragma once
 
 #include <vector>
@@ -28,8 +24,7 @@ char** toCharArrayArray(const vector<string>& input) {
     return toArray(*output);
 }
 
-vector<string>* splitOnSpace(string input) {
-    char delimiter = ' ';
+vector<string>* split(string input, const string& delimiter) {
     auto output = new vector<string>;
 
     size_t pos = 0;
@@ -37,7 +32,7 @@ vector<string>* splitOnSpace(string input) {
     while ((pos = input.find(delimiter)) != string::npos) {
         token = input.substr(0, pos);
         output->push_back(token);
-        input.erase(0, pos + 1);
+        input.erase(0, pos + delimiter.length());
     }
     output->push_back(input);
 
