@@ -15,7 +15,7 @@ public:
     Command(const string& command) {
         auto pipelineCommands = split(command, "|");
         for(auto & cmd : *pipelineCommands) {
-            char** standardFormatCommand = convertToStandardFormat(cmd);
+            char** standardFormatCommand = convertToStandardFormat(trim(cmd));
             commands->push_back(standardFormatCommand);
         }
     }
@@ -26,6 +26,11 @@ public:
 
     int commandCount() const {
         return commands->size();
+    }
+
+    bool isChangeDirectoryCommand() const {
+        char* cmd = getCommand(0)[0];
+        return commandCount() == 1 && strcmp(cmd, "cd") == 0;
     }
 
 private:
