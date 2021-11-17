@@ -43,8 +43,29 @@ public:
         chdir(path.c_str());
     }
 
+    string getOutput(const Command& command) {
+        if(command.commandCount() != 1) {
+            throw runtime_error("illegal argument");
+        }
+
+        string stringCommand = command.getStringCommand(0);
+        char* cmd = new char[stringCommand.size()];
+        strcpy(cmd, stringCommand.c_str());
+        unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+
+        if (!pipe)
+            throw runtime_error("popen() failed!");
+
+        array<char, 128> buffer{};
+        string result;
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
+            result += buffer.data();
+
+        return string(result.begin(), result.end() - 1);
+    }
+
 private:
-    int spawnProc(char** cmd, int in, int out) {
+    int spawnProc(char** cmd, int in, int out) const {
         pid_t pid = fork();
         if(pid == 0) {
             if(in != 0) {

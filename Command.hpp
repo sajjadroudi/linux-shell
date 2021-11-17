@@ -10,18 +10,25 @@ class Command {
 
 private:
     vector<char**>* commands = new vector<char**>;
+    vector<string>* strCommands = new vector<string>;
 
 public:
     Command(const string& command) {
         auto pipelineCommands = split(command, "|");
-        for(auto & cmd : *pipelineCommands) {
-            char** standardFormatCommand = convertToStandardFormat(trim(cmd));
+        for(auto cmd : *pipelineCommands) {
+            cmd = trim(cmd);
+            strCommands->push_back(cmd);
+            char** standardFormatCommand = convertToStandardFormat(cmd);
             commands->push_back(standardFormatCommand);
         }
     }
 
     char** getCommand(int index) const {
         return commands->at(index);
+    }
+
+    string getStringCommand(int index) const {
+        return strCommands->at(index);
     }
 
     int commandCount() const {
