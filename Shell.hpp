@@ -22,10 +22,13 @@ public:
 
     void run() {
         string line;
-        while(1) {
-            printPrompt();
+        printPrompt();
+        while(true) {
             getline(cin, line);
-            executor->execute(line);
+            if(!line.empty()) {
+                executor->execute(line);
+            }
+            printPrompt();
         }
     }
 

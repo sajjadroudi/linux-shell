@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unistd.h>
+#include <fstream>
 #include "Command.hpp"
 
 class CommandExecutor {
@@ -14,6 +15,12 @@ public:
         if(cmd.isChangeDirectoryCommand()) {
             char* path = cmd.getCommand(0)[1];
             changeDirectory(path);
+            return;
+        }
+
+        if(cmd.isFileExecutionCommand()) {
+            char* path = cmd.getCommand(0)[1];
+            executeFile(path);
             return;
         }
 
@@ -81,6 +88,21 @@ private:
         }
 
         return pid;
+    }
+
+    void executeFile(const string& path) {
+        ifstream file{path};
+
+        if(!file) {
+            cerr << "Something went wrong." << endl;
+            return;
+        }
+
+        for(string line; getline(file, line); ) {
+            execute(line);
+        }
+
+        file.close();
     }
 
 };

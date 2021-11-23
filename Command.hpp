@@ -40,6 +40,11 @@ public:
         return commandCount() == 1 && strcmp(cmd, "cd") == 0;
     }
 
+    bool isFileExecutionCommand() const {
+        char* cmd = getCommand(0)[0];
+        return commandCount() == 1 && strcmp(cmd, "fshell") == 0;
+    }
+
 private:
     static char** convertToStandardFormat(const string& command) {
         auto pieces = split(command, " ");
