@@ -1,9 +1,8 @@
-#include <iostream>
 #include "Shell.hpp"
 
 using namespace std;
 
 int main() {
-    auto shell = new Shell();
+    auto shell = Shell::getInstance();
     shell->run();
 }

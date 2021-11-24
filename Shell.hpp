@@ -13,14 +13,21 @@ class Shell {
 private:
     CommandExecutor* executor = new CommandExecutor;
 
-public:
     Shell() : Shell{getDefaultPath()} {}
 
     Shell(const string& path) {
         executor->changeDirectory(path);
     }
 
+public:
+    static Shell* getInstance() {
+        static Shell* instance = new Shell;
+        return instance;
+    }
+
     void run() {
+        registerCtrlCHandler();
+
         string line;
         printPrompt();
         while(true) {
@@ -48,6 +55,14 @@ private:
 
     string getOutput(string command) {
         return executor->getOutput(Command(command));
+    }
+
+    void registerCtrlCHandler() {
+        signal(SIGINT, [](int s) -> void {
+            cout << endl;
+            getInstance()->printPrompt();
+            cout << flush;
+        });
     }
 
 };
