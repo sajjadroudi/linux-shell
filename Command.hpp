@@ -36,13 +36,15 @@ public:
     }
 
     bool isChangeDirectoryCommand() const {
-        char* cmd = getCommand(0)[0];
-        return commandCount() == 1 && strcmp(cmd, "cd") == 0;
+        return isCommand("cd");
     }
 
     bool isFileExecutionCommand() const {
-        char* cmd = getCommand(0)[0];
-        return commandCount() == 1 && strcmp(cmd, "fshell") == 0;
+        return isCommand("fshell");
+    }
+
+    bool isExitCommand() const {
+        return isCommand("exit");
     }
 
 private:
@@ -51,6 +53,11 @@ private:
         char** args = toCharArrayArray(*pieces);
         args = appendNull(args, pieces->size());
         return args;
+    }
+
+    bool isCommand(const string&& command) const {
+        char* cmd = getCommand(0)[0];
+        return commandCount() == 1 && strcmp(cmd, command.c_str()) == 0;
     }
 
 };

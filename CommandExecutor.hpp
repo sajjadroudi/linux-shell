@@ -19,6 +19,10 @@ public:
             return;
         }
 
+        if(cmd.isExitCommand()) {
+            exit(1);
+        }
+
         if(cmd.isFileExecutionCommand()) {
             char* path = cmd.getCommand(0)[1];
             executeFile(path);
