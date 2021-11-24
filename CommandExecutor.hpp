@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <fstream>
+#include <sys/wait.h>
 #include "Command.hpp"
 
 class CommandExecutor {
@@ -24,7 +25,8 @@ public:
             return;
         }
 
-        if(fork() == 0) {
+        pid_t pid = fork();
+        if(pid == 0) {
             int in = 0;
             int fd[2];
 
@@ -43,6 +45,8 @@ public:
                     cmd.getCommand(i)[0],
                     cmd.getCommand(i)
             );
+        } else {
+            wait(NULL);
         }
     }
 
