@@ -21,7 +21,7 @@ public:
         }
 
         if(cmd.isExitCommand()) {
-            exit(1);
+            exit(0);
         }
 
         if(cmd.isFileExecutionCommand()) {
