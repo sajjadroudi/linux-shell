@@ -47,13 +47,12 @@ private:
     }
 
     void printPrompt() {
-        string prompt = getOutput("whoami") + "@" +
-            getOutput("hostname") + ":" +
-            replace(getOutput("pwd"), getDefaultPath(), "~") + "$ ";
-
-        Color::Modifier green(Color::FG_GREEN);
         Color::Modifier def(Color::FG_DEFAULT);
-        cout << green << prompt << def;
+        Color::Modifier green(Color::FG_GREEN);
+        Color::Modifier blue(Color::FG_BLUE);
+        cout << green << getOutput("whoami") << "@" << getOutput("hostname")
+        << def << ":" << blue << replace(getOutput("pwd"), getDefaultPath(), "~")
+        << def << "$ ";
     }
 
     string getOutput(string command) {
