@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <iostream>
+#include "colormod.hpp"
 
 using namespace std;
 
@@ -50,7 +51,9 @@ private:
             getOutput("hostname") + ":" +
             replace(getOutput("pwd"), getDefaultPath(), "~") + "$ ";
 
-        cout << prompt;
+        Color::Modifier green(Color::FG_GREEN);
+        Color::Modifier def(Color::FG_DEFAULT);
+        cout << green << prompt << def;
     }
 
     string getOutput(string command) {
