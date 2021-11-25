@@ -74,11 +74,16 @@ public:
         }
     }
 
-    void changeDirectory(char* path) const {
+    void changeDirectory(char* path) {
         if(path == NULL) {
             struct passwd *pw = getpwuid(getuid());
             chdir(pw->pw_dir);
             return;
+        }
+
+        if(strcmp(path, "~") == 0) {
+            struct passwd *pw = getpwuid(getuid());
+            path = pw->pw_dir;
         }
 
         if(chdir(path) == -1) {
