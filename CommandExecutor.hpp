@@ -74,8 +74,16 @@ public:
         }
     }
 
-    void changeDirectory(const string& path) const {
-        chdir(path.c_str());
+    void changeDirectory(char* path) const {
+        if(path == NULL) {
+            struct passwd *pw = getpwuid(getuid());
+            chdir(pw->pw_dir);
+            return;
+        }
+
+        if(chdir(path) == -1) {
+            cerr << path << ": no such directory" << endl;
+        }
     }
 
     string getOutput(const Command& command) {

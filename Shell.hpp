@@ -17,7 +17,7 @@ private:
     Shell() : Shell{getDefaultPath()} {}
 
     Shell(const string& path) {
-        executor->changeDirectory(path);
+        executor->changeDirectory(const_cast<char *>(path.c_str()));
     }
 
 public:
