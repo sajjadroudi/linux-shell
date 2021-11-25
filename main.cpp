@@ -3,6 +3,5 @@
 using namespace std;
 
 int main() {
-    auto shell = Shell::getInstance();
-    shell->run();
+    Shell::getInstance()->run();
 }

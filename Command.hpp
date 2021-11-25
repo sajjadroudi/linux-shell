@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "utils.hpp"
+#include "AliasHandler.hpp"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ public:
     Command(const string& command) {
         auto pipelineCommands = split(command, "|");
         for(auto cmd : *pipelineCommands) {
-            cmd = trim(cmd);
+            cmd = AliasHandler::getInstance()->applyAlias(trim(cmd));
             strCommands->push_back(cmd);
             char** standardFormatCommand = convertToStandardFormat(cmd);
             commands->push_back(standardFormatCommand);
@@ -45,6 +46,14 @@ public:
 
     bool isExitCommand() const {
         return isCommand("exit");
+    }
+
+    bool isAliasCommand() const {
+        return isCommand("alias");
+    }
+
+    bool isUnaliasCommand() const {
+        return isCommand("unalias");
     }
 
 private:

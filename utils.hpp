@@ -43,6 +43,21 @@ vector<string>* split(string input, const string& delimiter) {
     return output;
 }
 
+vector<string>* splitIntoTwoPieces(string input, const string& delimiter) {
+    auto output = new vector<string>;
+
+    size_t pos = 0;
+    string token;
+    if ((pos = input.find(delimiter)) != string::npos) {
+        token = input.substr(0, pos);
+        output->push_back(token);
+        input.erase(0, pos + delimiter.length());
+    }
+    output->push_back(input);
+
+    return output;
+}
+
 template<typename T>
 T* appendNull(const T array[], int length) {
     int newLength = length + 1;

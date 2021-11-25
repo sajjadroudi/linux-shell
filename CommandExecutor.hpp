@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sys/wait.h>
 #include "Command.hpp"
+#include "CommandExecutor.hpp"
 
 class CommandExecutor {
 
@@ -26,6 +27,25 @@ public:
         if(cmd.isFileExecutionCommand()) {
             char* path = cmd.getCommand(0)[1];
             executeFile(path);
+            return;
+        }
+
+        if(cmd.isAliasCommand()) {
+            string alias;
+            char** command = cmd.getCommand(0);
+            for(int i = 1; command[i] != NULL; i++) {
+                alias.append(command[i]).append(" ");
+            }
+            alias = rtrim(alias);
+
+            auto pieces = splitIntoTwoPieces(alias, "=");
+            AliasHandler::getInstance()->saveAlias(pieces->at(0), pieces->at(1));
+            return;
+        }
+
+        if(cmd.isUnaliasCommand()) {
+            char* alias = cmd.getCommand(0)[1];
+            AliasHandler::getInstance()->removeAlias(alias);
             return;
         }
 
