@@ -1,11 +1,11 @@
 #pragma once
 
-#include "CommandExecutor.hpp"
+#include "CommandExecutor.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
 #include <iostream>
-#include "colormod.hpp"
+#include "colormod.h"
 
 using namespace std;
 

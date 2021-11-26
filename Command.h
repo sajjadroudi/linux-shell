@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "utils.hpp"
-#include "AliasHandler.hpp"
+#include "utils.h"
+#include "AliasHandler.h"
 
 using namespace std;
 
@@ -15,13 +15,18 @@ private:
 
 public:
     Command(const string& command) {
+        AliasHandler* aliasHandler = AliasHandler::getInstance();
+
         auto pipelineCommands = split(command, "|");
         for(auto cmd : *pipelineCommands) {
-            cmd = AliasHandler::getInstance()->applyAlias(trim(cmd));
+            cmd = aliasHandler->applyAlias(trim(cmd));
+
             strCommands->push_back(cmd);
+
             char** standardFormatCommand = convertToStandardFormat(cmd);
             commands->push_back(standardFormatCommand);
         }
+
     }
 
     char** getCommand(int index) const {

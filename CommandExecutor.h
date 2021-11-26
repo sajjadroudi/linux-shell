@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include <fstream>
 #include <sys/wait.h>
-#include "Command.hpp"
-#include "CommandExecutor.hpp"
+#include "Command.h"
+#include "CommandExecutor.h"
 
 class CommandExecutor {
 
@@ -25,21 +25,13 @@ public:
         }
 
         if(cmd.isFileExecutionCommand()) {
-            char* path = cmd.getCommand(0)[1];
-            executeFile(path);
+            char* filePath = cmd.getCommand(0)[1];
+            executeFile(filePath);
             return;
         }
 
         if(cmd.isAliasCommand()) {
-            string alias;
-            char** command = cmd.getCommand(0);
-            for(int i = 1; command[i] != NULL; i++) {
-                alias.append(command[i]).append(" ");
-            }
-            alias = rtrim(alias);
-
-            auto pieces = splitIntoTwoPieces(alias, "=");
-            AliasHandler::getInstance()->saveAlias(pieces->at(0), pieces->at(1));
+            handleAliasCommand(cmd);
             return;
         }
 
@@ -49,29 +41,7 @@ public:
             return;
         }
 
-        pid_t pid = fork();
-        if(pid == 0) {
-            int in = 0;
-            int fd[2];
-
-            int i;
-            for (i = 0; i < cmd.commandCount() - 1; i++) {
-                pipe(fd);
-                spawnProc(cmd.getCommand(i), in, fd[1]);
-                close(fd[1]);
-                in = fd[0];
-            }
-
-            if (in != 0)
-                dup2(in, 0);
-
-            execvp(
-                    cmd.getCommand(i)[0],
-                    cmd.getCommand(i)
-            );
-        } else {
-            wait(NULL);
-        }
+        executeCommand(cmd);
     }
 
     void changeDirectory(char* path) {
@@ -90,8 +60,9 @@ public:
     }
 
     string getOutput(const Command& command) {
+        // Only single commands are supported
         if(command.commandCount() != 1) {
-            throw runtime_error("illegal argument");
+            return string{};
         }
 
         string stringCommand = command.getStringCommand(0);
@@ -142,6 +113,44 @@ private:
         }
 
         file.close();
+    }
+
+    void handleAliasCommand(const Command& cmd) {
+        string alias;
+        char** command = cmd.getCommand(0);
+        for(int i = 1; command[i] != NULL; i++) {
+            alias.append(command[i]).append(" ");
+        }
+        alias = rtrim(alias);
+
+        auto pieces = splitIntoTwoPieces(alias, "=");
+        AliasHandler::getInstance()->saveAlias(pieces->at(0), pieces->at(1));
+    }
+
+    void executeCommand(const Command& cmd) {
+        pid_t pid = fork();
+        if(pid == 0) {
+            int in = 0;
+            int fd[2];
+
+            int i;
+            for (i = 0; i < cmd.commandCount() - 1; i++) {
+                pipe(fd);
+                spawnProc(cmd.getCommand(i), in, fd[1]);
+                close(fd[1]);
+                in = fd[0];
+            }
+
+            if (in != 0)
+                dup2(in, 0);
+
+            execvp(
+                    cmd.getCommand(i)[0],
+                    cmd.getCommand(i)
+            );
+        } else {
+            wait(NULL);
+        }
     }
 
 };
