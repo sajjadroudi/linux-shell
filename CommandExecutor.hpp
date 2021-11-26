@@ -81,10 +81,8 @@ public:
             return;
         }
 
-        if(strcmp(path, "~") == 0) {
-            struct passwd *pw = getpwuid(getuid());
-            path = pw->pw_dir;
-        }
+        struct passwd *pw = getpwuid(getuid());
+        path = replaceCharStar(path, "~", pw->pw_dir);
 
         if(chdir(path) == -1) {
             cerr << path << ": no such directory" << endl;
