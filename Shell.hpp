@@ -34,7 +34,11 @@ public:
         while(true) {
             getline(cin, line);
             if(!line.empty()) {
-                executor->execute(line);
+                try {
+                    executor->execute(line);
+                } catch (...) {
+                    cerr << "Invalid input" << endl;
+                }
             }
             printPrompt();
         }
