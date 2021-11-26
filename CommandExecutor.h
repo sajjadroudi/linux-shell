@@ -45,14 +45,15 @@ public:
     }
 
     void changeDirectory(char* path) {
+        struct passwd *pw = getpwuid(getuid());
+        char* home = pw->pw_dir;
+
         if(path == NULL) {
-            struct passwd *pw = getpwuid(getuid());
-            chdir(pw->pw_dir);
+            chdir(home);
             return;
         }
 
-        struct passwd *pw = getpwuid(getuid());
-        path = replaceCharStar(path, "~", pw->pw_dir);
+        path = replaceCharStar(path, "~", home);
 
         if(chdir(path) == -1) {
             cerr << path << ": no such directory" << endl;
@@ -82,24 +83,6 @@ public:
     }
 
 private:
-    int spawnProc(char** cmd, int in, int out) const {
-        pid_t pid = fork();
-        if(pid == 0) {
-            if(in != 0) {
-                dup2(in, 0);
-                close(in);
-            }
-            if(out != 1) {
-                dup2(out, 1);
-                close(out);
-            }
-
-            return execvp(cmd[0], cmd);
-        }
-
-        return pid;
-    }
-
     void executeFile(const string& path) {
         ifstream file{path};
 
@@ -128,15 +111,14 @@ private:
     }
 
     void executeCommand(const Command& cmd) {
-        pid_t pid = fork();
-        if(pid == 0) {
+        if(fork() == 0) {
             int in = 0;
             int fd[2];
 
             int i;
             for (i = 0; i < cmd.commandCount() - 1; i++) {
                 pipe(fd);
-                spawnProc(cmd.getCommand(i), in, fd[1]);
+                forkProcess(cmd.getCommand(i), in, fd[1]);
                 close(fd[1]);
                 in = fd[0];
             }
@@ -150,6 +132,20 @@ private:
             );
         } else {
             wait(NULL);
+        }
+    }
+
+    void forkProcess(char** command, int in, int out) const {
+        if(fork() == 0) {
+            if(in != 0) {
+                dup2(in, 0);
+                close(in);
+            }
+            if(out != 1) {
+                dup2(out, 1);
+                close(out);
+            }
+            execvp(command[0], command);
         }
     }
 
