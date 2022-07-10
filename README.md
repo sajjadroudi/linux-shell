@@ -1,6 +1,6 @@
 # Simple Shell
 
-Simple linux shell written in C++. Created as an University project for Operating Systems course. You can study [project_definition.pdf](https://github.com/sajjadroudi/linux-shell/blob/master/project_definition.pdf) for more details.
+Simple linux shell written in C++. Created as a university project for Operating Systems course. You can study [project_definition.pdf](https://github.com/sajjadroudi/linux-shell/blob/master/project_definition.pdf) for more details.
 
 
 ## Features
